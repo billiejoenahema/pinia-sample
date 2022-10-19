@@ -11,6 +11,7 @@
       rel="stylesheet"
     />
     <title>{{ config("app.name") }}</title>
+    @vite(['resources/js/app.js'])
   </head>
   <body>
     <noscript>

@@ -11,6 +11,14 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 8081,
+    host: true,
+    hmr: {
+      host: "localhost",
+    },
+  },
+  resolve: {
+    alias: {
+      "@": "/resources/js",
+    },
   },
 });
