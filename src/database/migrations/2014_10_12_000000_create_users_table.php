@@ -14,9 +14,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
+            $table->comment('ユーザー');
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('name')->comment('名前');
+            $table->string('email')->comment('メールアドレス')->unique();
+            $table->string('phone')->comment('電話番号')->nullable();
+            $table->string('zipcode')->comment('郵便番号')->nullable();
+            $table->string('pref')->comment('都道府県')->nullable();
+            $table->string('city')->comment('市区町村')->nullable();
+            $table->string('street')->comment('番地')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
