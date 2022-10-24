@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,7 @@ class UserController extends Controller
      * @param  User  $user
      * @return UserResource
      */
-    public function show($user)
+    public function show(User $user)
     {
         return new UserResource($user);
     }
