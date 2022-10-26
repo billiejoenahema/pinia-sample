@@ -15,7 +15,6 @@ export const useUserStore = defineStore("user", {
       try {
         this.user = await axios.get(`/api/user/${id}`);
       } catch (err) {
-        console.log(err ?? "");
         this.errors = err;
       }
     },
