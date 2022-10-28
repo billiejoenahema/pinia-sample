@@ -3,20 +3,39 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\IndexRequest;
 use App\Http\Resources\Api\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
+    private const PER_PAGE = 10;
+
     /**
-     * Display a listing of the resource.
+     * ユーザー一覧を取得する
      *
-     * @return \Illuminate\Http\Response
+     * @param IndexRequest $request
+     * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
-        //
+        $query = User::query();
+
+        $query->addSearchCondition($request);
+
+        $column = $request->getSortColumn();
+        $direction = $request->getSortDirection();
+        if ($column && $direction) {
+            $query->sortByColumn($column, $direction);
+        } else {
+            $query->sortByIdDesc();
+        }
+
+        $users = $query->paginate(self::PER_PAGE);
+
+        return UserResource::collection($users);
     }
 
     /**
