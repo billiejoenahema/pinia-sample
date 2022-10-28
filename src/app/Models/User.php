@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Http\Requests\User\IndexRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -89,4 +91,72 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * 所有するパートナーを取得する。
+     *
+     * @return HasOne
+     */
+    public function partner(): HasOne
+    {
+        return $this->hasOne(Partner::class);
+    }
+
+    /**
+     * IDの降順でソートするスコープ
+     *
+     * @param Builder|User $query
+     * @return Builder|User
+     */
+    public function scopeSortByIdDesc($query): Builder|User
+    {
+        $query->orderBy('id', 'desc');
+
+        return $query;
+    }
+
+    /**
+     * 検索条件
+     *
+     * @param Builder|User $query
+     * @param IndexRequest $request
+     * @return Builder|User
+     */
+    public function scopeAddSearchCondition($query, $request): Builder|User
+    {
+        if (isset($request['name'])) {
+            $query->where('name', 'like', "%{$request['name']}%");
+        }
+        if (isset($request['email'])) {
+            $query->where('email', 'like', "%{$request['email']}%");
+        }
+        if (isset($request['phone'])) {
+            $query->where('phone', 'like', "%{$request['phone']}%");
+        }
+
+        return $query;
+    }
+
+    /**
+     * 指定のカラムでソートするスコープ
+     *
+     * @param Builder|User $query
+     * @param string $column
+     * @param string $direction
+     * @return Builder|User
+     */
+    public function scopeSortByColumn($query, $column, $direction): Builder|User
+    {
+        // 検索対象のカラム
+        $columns = [
+            'name',
+            'email',
+            'phone',
+        ];
+        if (in_array($column, $columns, false)) {
+            $query->orderBy($column, $direction);
+        }
+
+        return $query;
+    }
 }
