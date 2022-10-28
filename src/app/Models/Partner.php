@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Partner whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Partner whereUserId($value)
  * @mixin \Eloquent
+ * @method static \Database\Factories\PartnerFactory factory(...$parameters)
  */
 class Partner extends Model
 {
