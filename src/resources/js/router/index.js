@@ -1,10 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Top from "@/views/Top.vue";
+import NotFound from "@/views/NotFound.vue";
 
 const routes = [
   {
     path: "/",
     component: Top,
+  },
+  {
+    path: "/:catchAll(.*)",
+    component: NotFound,
   },
 ];
 
