@@ -1,5 +1,6 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
+import SortIcon from "../components/SortIcon.vue";
 import { useUsersStore } from "../stores/users";
 
 // storeを定義する
@@ -11,6 +12,30 @@ onMounted(async () => {
 });
 // gettersプロパティを呼び出す
 const users = computed(() => store.data);
+const activeSortKey = ref("id");
+const sort = (sortValue) => {
+  activeSortKey.value = sortValue;
+  if (params.sort.includes(sortValue)) {
+    params.ascending = !params.ascending;
+  } else {
+    params.ascending = true;
+    Object.assign(params, { ...defaultParams });
+    params.sort = sortValue;
+  }
+  store.get(params);
+};
+const defaultParams = {
+  name: "",
+  email: "",
+  phone: "",
+  pref: "",
+  sort: "",
+  ascending: true,
+};
+const params = reactive({
+  ...defaultParams,
+  page: 1,
+});
 </script>
 
 <template>
@@ -18,10 +43,38 @@ const users = computed(() => store.data);
   <table class="table table-striped">
     <thead class="table-dark">
       <tr>
-        <th scope="col">name</th>
-        <th scope="col">email</th>
-        <th scope="col">phone</th>
-        <th scope="col">pref</th>
+        <th scope="col" @click="sort('name')">
+          name
+          <SortIcon
+            :ascending="params.ascending"
+            :active-sort-key="activeSortKey"
+            :label="'name'"
+          />
+        </th>
+        <th scope="col" @click="sort('email')">
+          email
+          <SortIcon
+            :ascending="params.ascending"
+            :active-sort-key="activeSortKey"
+            :label="'email'"
+          />
+        </th>
+        <th scope="col" @click="sort('phone')">
+          phone
+          <SortIcon
+            :ascending="params.ascending"
+            :active-sort-key="activeSortKey"
+            :label="'phone'"
+          />
+        </th>
+        <th scope="col" @click="sort('pref')">
+          pref
+          <SortIcon
+            :ascending="params.ascending"
+            :active-sort-key="activeSortKey"
+            :label="'pref'"
+          />
+        </th>
       </tr>
     </thead>
     <tbody>

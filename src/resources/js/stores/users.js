@@ -11,9 +11,10 @@ export const useUsersStore = defineStore("users", {
     },
   },
   actions: {
-    async get() {
+    async get(params) {
+      console.log(params);
       try {
-        this.users = await axios.get(`/api/user`);
+        this.users = await axios.get(`/api/user`, { params });
       } catch (err) {
         this.errors = err;
       }

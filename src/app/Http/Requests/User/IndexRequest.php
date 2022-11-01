@@ -42,6 +42,7 @@ class IndexRequest extends FormRequest
             'name',
             'email',
             'phone',
+            'pref',
         ];
         $column = Arr::first($columns, function ($value) use ($key) {
             return $value === $key;
@@ -57,6 +58,6 @@ class IndexRequest extends FormRequest
      */
     public function getSortDirection(): ?string
     {
-        return Str::startsWith($this->sort, '-');
+        return $this->ascending === 'true' ? 'asc' : 'desc';
     }
 }
