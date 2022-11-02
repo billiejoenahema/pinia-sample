@@ -25,10 +25,8 @@ const sort = (sortValue) => {
   store.get(params);
 };
 const defaultParams = {
-  name: "",
-  email: "",
-  phone: "",
-  pref: "",
+  search_column: "name",
+  search_word: "",
   sort: "",
   ascending: true,
 };
@@ -36,10 +34,45 @@ const params = reactive({
   ...defaultParams,
   page: 1,
 });
+// 入力欄でEnterを押したときの挙動
+const onKeyDownEnter = (event) => {
+  // 文字変換中なら何もしない
+  if (event.isComposing || event.keyCode === 229) return;
+  // 文字変換中でなければ検索を実行する
+  store.get(params);
+};
+const searchColumns = ["name", "email", "phone", "pref"];
+const search = () => {
+  store.get(params);
+};
 </script>
 
 <template>
-  <h2>User List</h2>
+  <div class="d-flex justify-content-between">
+    <h2>User List</h2>
+    <div class="form-inline d-inline-flex my-2 my-lg-0">
+      <select v-model="params.search_column" class="form-control">
+        <option v-for="column in searchColumns" :id="column">
+          {{ column }}
+        </option>
+      </select>
+      <input
+        v-model="params.search_word"
+        class="form-control mr-sm-2"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+        @keydown.enter="onKeyDownEnter($event)"
+      />
+      <button
+        class="btn btn-outline-success my-2 my-sm-0"
+        type="button"
+        @click="search()"
+      >
+        Search
+      </button>
+    </div>
+  </div>
   <table class="table table-striped">
     <thead class="table-dark">
       <tr>

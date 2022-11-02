@@ -37,7 +37,7 @@ class IndexRequest extends FormRequest
      */
     public function getSortColumn(): ?string
     {
-        $key = Str::after($this->sort, '-');
+        $key = $this->sort;
         $columns = [
             'name',
             'email',
