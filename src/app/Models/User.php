@@ -124,14 +124,9 @@ class User extends Authenticatable
      */
     public function scopeAddSearchCondition($query, $request): Builder|User
     {
-        if (isset($request['name'])) {
-            $query->where('name', 'like', "%{$request['name']}%");
-        }
-        if (isset($request['email'])) {
-            $query->where('email', 'like', "%{$request['email']}%");
-        }
-        if (isset($request['phone'])) {
-            $query->where('phone', 'like', "%{$request['phone']}%");
+        $searchWord = $request['search_word'] ?? null;
+        if ($searchWord) {
+            $query->where($request['search_column'], 'like', "%{$searchWord}%");
         }
 
         return $query;
