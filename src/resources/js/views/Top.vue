@@ -41,7 +41,7 @@ const onKeyDownEnter = (event) => {
   // 文字変換中でなければ検索を実行する
   store.get(params);
 };
-const searchColumns = ["name", "email", "phone", "pref"];
+const searchColumns = ["name", "email", "phone", "pref", "datetime"];
 const search = () => {
   store.get(params);
 };
@@ -57,13 +57,18 @@ const search = () => {
         </option>
       </select>
       <input
+        type="datetime-local"
+        v-model="params.search_word"
+        @keydown.enter="onKeyDownEnter($event)"
+      />
+      <!-- <input
         v-model="params.search_word"
         class="form-control mr-sm-2"
         type="search"
         placeholder="Search"
         aria-label="Search"
         @keydown.enter="onKeyDownEnter($event)"
-      />
+      /> -->
       <button
         class="btn btn-outline-success my-2 my-sm-0"
         type="button"
