@@ -20,5 +20,11 @@ class UserSeeder extends Seeder
                 ['name' => 'test']
             )
         )->create();
+        User::factory(3)->state(['datetime' => now()->addDay()])
+            ->has(
+                Partner::factory()->state(
+                    ['name' => 'test']
+                )
+            )->create();
     }
 }

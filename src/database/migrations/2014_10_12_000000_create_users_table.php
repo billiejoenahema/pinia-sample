@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->comment('ユーザー');
             $table->id();
+            $table->timestamp('datetime')->comment('日時');
             $table->string('name')->comment('名前');
             $table->string('email')->comment('メールアドレス')->unique();
             $table->string('phone')->comment('電話番号')->nullable();
