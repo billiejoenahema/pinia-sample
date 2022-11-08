@@ -53,9 +53,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User sortByIdDesc()
  * @property-read \App\Models\Partner|null $user
  * @method static Builder|User addSearchCondition($request)
- * @property string $datetime 日時
- * @property-read \App\Models\Partner|null $partner
- * @method static Builder|User whereDatetime($value)
  */
 class User extends Authenticatable
 {
@@ -127,11 +124,9 @@ class User extends Authenticatable
      */
     public function scopeAddSearchCondition($query, $request): Builder|User
     {
-        if (isset($request['search_word'])) {
-            $query->where($request['search_column'], 'like', "%{$request['search_word']}%");
-        }
-        if (isset($request['datetime'])) {
-            $query->where('datetime', '>=', $request['datetime']);
+        $searchWord = $request['search_word'] ?? null;
+        if ($searchWord) {
+            $query->where($request['search_column'], 'like', "%{$searchWord}%");
         }
 
         return $query;

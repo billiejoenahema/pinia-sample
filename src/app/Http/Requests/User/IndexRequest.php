@@ -43,7 +43,6 @@ class IndexRequest extends FormRequest
             'email',
             'phone',
             'pref',
-            'datetime',
         ];
         $column = Arr::first($columns, function ($value) use ($key) {
             return $value === $key;
