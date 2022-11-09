@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{user}', [UserController::class, 'show']);
+
+// 定数
+Route::get('/consts', fn () => config('const'));

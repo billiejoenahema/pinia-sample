@@ -1,18 +1,22 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 import SortIcon from "../components/SortIcon.vue";
+import { useConstsStore } from "../stores/consts";
 import { useUsersStore } from "../stores/users";
 
 // storeを定義する
 const store = useUsersStore();
+const constsStore = useConstsStore();
 
 // actionメソッドを実行する
 onMounted(async () => {
   await store.get();
+  await constsStore.getIfNeeded();
 });
 // gettersプロパティを呼び出す
 const users = computed(() => store.data);
 const activeSortKey = ref("id");
+const prefectureTextValue = computed(() => constsStore.prefectureTextValue);
 const sort = (sortValue) => {
   activeSortKey.value = sortValue;
   if (params.sort.includes(sortValue)) {
@@ -115,7 +119,7 @@ const search = () => {
         <th scope="row">{{ user.name }}</th>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>
-        <td>{{ user.pref }}</td>
+        <td>{{ prefectureTextValue(user.pref) ?? "" }}</td>
       </tr>
     </tbody>
   </table>
