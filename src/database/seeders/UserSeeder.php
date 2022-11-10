@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(3)->has(
+        User::factory(10)->has(
             Partner::factory()->state(
                 ['name' => 'test']
             )
