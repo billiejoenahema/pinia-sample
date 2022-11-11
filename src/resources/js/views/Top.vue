@@ -1,18 +1,22 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 import SortIcon from "../components/SortIcon.vue";
+import { useConstsStore } from "../stores/consts";
 import { useUsersStore } from "../stores/users";
 
 // storeを定義する
 const store = useUsersStore();
+const constsStore = useConstsStore();
 
 // actionメソッドを実行する
 onMounted(async () => {
   await store.get();
+  await constsStore.getIfNeeded();
 });
 // gettersプロパティを呼び出す
 const users = computed(() => store.data);
 const activeSortKey = ref("id");
+const prefectureFormOptions = computed(() => constsStore.prefectureFormOptions);
 const sort = (sortValue) => {
   activeSortKey.value = sortValue;
   if (params.sort.includes(sortValue)) {
@@ -51,6 +55,11 @@ const search = () => {
   <div class="d-flex justify-content-between">
     <h2>User List</h2>
     <div class="form-inline d-inline-flex my-2 my-lg-0">
+      <select v-model="params.pref" class="form-control">
+        <option v-for="(pref, index) in prefectureFormOptions" :key="index">
+          {{ pref }}
+        </option>
+      </select>
       <select v-model="params.search_column" class="form-control">
         <option v-for="column in searchColumns" :id="column">
           {{ column }}
