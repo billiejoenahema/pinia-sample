@@ -16,7 +16,7 @@ onMounted(async () => {
 // gettersプロパティを呼び出す
 const users = computed(() => store.data);
 const activeSortKey = ref("id");
-const prefectureTextValue = computed(() => constsStore.prefectureTextValue);
+const prefectureFormOptions = computed(() => constsStore.prefectureFormOptions);
 const sort = (sortValue) => {
   activeSortKey.value = sortValue;
   if (params.sort.includes(sortValue)) {
@@ -55,6 +55,11 @@ const search = () => {
   <div class="d-flex justify-content-between">
     <h2>User List</h2>
     <div class="form-inline d-inline-flex my-2 my-lg-0">
+      <select v-model="params.pref" class="form-control">
+        <option v-for="(pref, index) in prefectureFormOptions" :key="index">
+          {{ pref }}
+        </option>
+      </select>
       <select v-model="params.search_column" class="form-control">
         <option v-for="column in searchColumns" :id="column">
           {{ column }}
@@ -119,7 +124,7 @@ const search = () => {
         <th scope="row">{{ user.name }}</th>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>
-        <td>{{ prefectureTextValue(user.pref) ?? "" }}</td>
+        <td>{{ user.pref }}</td>
       </tr>
     </tbody>
   </table>

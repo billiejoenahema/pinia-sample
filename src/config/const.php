@@ -3,5 +3,5 @@
 use App\Enums\Prefecture;
 
 return [
-    'PREFECTURES' => Prefecture::toArray(),
+    'PREFECTURES' => Prefecture::texts(),
 ];

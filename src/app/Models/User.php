@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\Prefecture;
 use App\Http\Requests\User\IndexRequest;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -153,5 +155,18 @@ class User extends Authenticatable
         }
 
         return $query;
+    }
+
+    /**
+     * 都道府県名を操作
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function pref(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Prefecture::from($value)->text(),
+            set: fn ($value) => Prefecture::toId($value),
+        );
     }
 }

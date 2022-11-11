@@ -7,13 +7,7 @@ export const useConstsStore = defineStore("consts", {
   }),
   getters: {
     prefectureFormOptions(state) {
-      return state.PREFECTURES ?? [];
-    },
-    prefectureTextValue: (state) => (id) => {
-      const item = state.consts?.data?.PREFECTURES?.find((v) => {
-        return v.id == id;
-      });
-      return item?.name ?? "";
+      return state.consts?.data?.PREFECTURES ?? [];
     },
   },
   actions: {

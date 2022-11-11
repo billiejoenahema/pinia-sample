@@ -6,6 +6,19 @@ namespace App\Enums;
 
 trait CodeTrait
 {
+
+    /**
+     * caseに対応するテキストの配列を返す。
+     *
+     * @return array
+     */
+    public static function texts(): array
+    {
+        return array_map(function (self $case) {
+            return $case->text();
+        }, self::cases());
+    }
+
     /**
      * caseのスカラー値とcaseに対応するテキストの配列を返す。
      *
