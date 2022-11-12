@@ -7,6 +7,7 @@ use App\Http\Requests\User\IndexRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -60,6 +61,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /** 集計する日数 */
+    public const TOTAL_DAYS = 3;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -102,6 +106,16 @@ class User extends Authenticatable
     public function partner(): HasOne
     {
         return $this->hasOne(Partner::class);
+    }
+
+    /**
+     * 所有する勤怠情報を取得する。
+     *
+     * @return HasMany
+     */
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
     }
 
     /**
@@ -166,7 +180,48 @@ class User extends Authenticatable
     {
         return Attribute::make(
             get: fn ($value) => Prefecture::from($value)->text(),
-            set: fn ($value) => Prefecture::toId($value),
         );
+    }
+
+    /**
+     * 郵便番号を操作
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function zipcode(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                $code1 = substr($value, 0, 3);
+                $code2 = substr($value, 3);
+                return "{$code1}-{$code2}";
+            },
+        );
+    }
+
+    /**
+     * 過去n日間の総労働時間を'H:i'形式で取得する
+     *
+     * @return string
+     */
+    public function getTotalWorkingTimeAttribute(): string
+    {
+        /** @var \App\Models\User $this */
+        $attendances = $this->attendances->take(self::TOTAL_DAYS);
+        $workingTimes = collect($attendances)->map(function ($item) {
+            $inTime = strtotime($item->in_time);
+            $outTime = strtotime($item->out_time);
+            $restTime = strtotime($item->rest_time) - strtotime('00:00');
+
+            return $outTime - $inTime - $restTime;
+        });
+        // 総労働時間の秒数
+        $sec = $workingTimes->sum();
+        // 時
+        $hours = floor($sec / 3600);
+        // 分
+        $minutes = floor(($sec / 60) % 60);
+
+        return sprintf("%2d:%02d", $hours, $minutes);
     }
 }
