@@ -21,7 +21,7 @@ class UserController extends Controller
      */
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
-        $query = User::query();
+        $query = User::query()->with(['partner']);
 
         $query->addSearchCondition($request);
 
