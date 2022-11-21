@@ -84,7 +84,7 @@ const search = () => {
   </div>
   <table class="table table-striped">
     <thead class="table-dark">
-      <tr>
+      <tr class="sticky-top">
         <th scope="col" @click="sort('name')">
           name
           <SortIcon
