@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
+import Pagination from "../components/Pagination.vue";
 import SortIcon from "../components/SortIcon.vue";
 import { useConstsStore } from "../stores/consts";
 import { useUsersStore } from "../stores/users";
@@ -15,6 +16,7 @@ onMounted(async () => {
 });
 // gettersプロパティを呼び出す
 const users = computed(() => store.data);
+const links = computed(() => store.links);
 const activeSortKey = ref("id");
 const prefectureFormOptions = computed(() => constsStore.prefectureFormOptions);
 const sort = (sortValue) => {
@@ -48,6 +50,13 @@ const onKeyDownEnter = (event) => {
 const searchColumns = ["name", "email", "phone", "pref"];
 const search = () => {
   store.get(params);
+};
+const changePage = (page) => {
+  console.log("page", page);
+  if (page) {
+    params.page = page;
+    store.get(params);
+  }
 };
 </script>
 
@@ -128,4 +137,5 @@ const search = () => {
       </tr>
     </tbody>
   </table>
+  <Pagination :links="links" @change="changePage" />
 </template>
