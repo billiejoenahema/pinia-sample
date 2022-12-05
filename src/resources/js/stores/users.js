@@ -9,6 +9,9 @@ export const useUsersStore = defineStore("users", {
     data() {
       return this.users.data?.data ?? {};
     },
+    links() {
+      return this.users.data?.meta?.links ?? [];
+    },
   },
   actions: {
     async get(params) {

@@ -55,6 +55,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User sortByIdDesc()
  * @property-read \App\Models\Partner|null $user
  * @method static Builder|User addSearchCondition($request)
+ * @property-read \App\Models\Partner|null $partner
  */
 class User extends Authenticatable
 {
