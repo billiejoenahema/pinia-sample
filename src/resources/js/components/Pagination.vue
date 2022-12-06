@@ -7,8 +7,8 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["change"]);
-const changePage = (url) => {
-  const page = url.substring(url.length - 1);
+const changePage = (url = null) => {
+  const page = url?.substring(url.length - 1) || null;
   emit("change", page);
 };
 const linkLabel = (label) => {
@@ -20,12 +20,12 @@ const linkLabel = (label) => {
   <ul class="pagination">
     <li
       v-for="link in links"
-      :disabled="link.url === null"
       class="page-item"
       :class="{
-        'pagination-link-enabled': link.url !== null,
-        'pagination-link-active': link.active,
+        disabled: link.url === null,
+        active: link.active,
       }"
+      :tabindex="link.url === null ? '-1' : ''"
       @click.prevent="changePage(link.url)"
     >
       <a href="#" class="page-link">
