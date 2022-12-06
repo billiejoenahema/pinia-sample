@@ -51,8 +51,7 @@ const searchColumns = ["name", "email", "phone", "pref"];
 const search = () => {
   store.get(params);
 };
-const changePage = (page) => {
-  console.log("page", page);
+const changePage = (page = null) => {
   if (page) {
     params.page = page;
     store.get(params);
