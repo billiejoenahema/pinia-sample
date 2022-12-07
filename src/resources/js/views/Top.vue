@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
+import DataCount from "../components/DataCount.vue";
 import Pagination from "../components/Pagination.vue";
 import SortIcon from "../components/SortIcon.vue";
 import { useConstsStore } from "../stores/consts";
@@ -17,6 +18,7 @@ onMounted(async () => {
 // gettersプロパティを呼び出す
 const users = computed(() => store.data);
 const links = computed(() => store.links);
+const meta = computed(() => store.meta);
 const activeSortKey = ref("id");
 const prefectureFormOptions = computed(() => constsStore.prefectureFormOptions);
 const sort = (sortValue) => {
@@ -136,5 +138,6 @@ const changePage = (page = null) => {
       </tr>
     </tbody>
   </table>
+  <DataCount :meta="meta" />
   <Pagination :links="links" @change="changePage" />
 </template>
