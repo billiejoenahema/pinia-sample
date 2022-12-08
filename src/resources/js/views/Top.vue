@@ -1,11 +1,13 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import DataCount from "../components/DataCount.vue";
 import Pagination from "../components/Pagination.vue";
 import SortIcon from "../components/SortIcon.vue";
 import { useConstsStore } from "../stores/consts";
 import { useUsersStore } from "../stores/users";
 
+const router = useRouter();
 // storeを定義する
 const store = useUsersStore();
 const constsStore = useConstsStore();
@@ -52,6 +54,9 @@ const onKeyDownEnter = (event) => {
 const searchColumns = ["name", "email", "phone", "pref"];
 const search = () => {
   store.get(params);
+};
+const moveToDetail = (id) => {
+  router.push(`/users/${id}`);
 };
 const changePage = (page = null) => {
   if (page) {
@@ -130,7 +135,12 @@ const changePage = (page = null) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="user in users" :id="user.id">
+      <tr
+        v-for="user in users"
+        :id="user.id"
+        @click="moveToDetail(user.id)"
+        class="user-row"
+      >
         <th scope="row">{{ user.name }}</th>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>
@@ -141,3 +151,12 @@ const changePage = (page = null) => {
   <DataCount :meta="meta" />
   <Pagination :links="links" @change="changePage" />
 </template>
+
+<style>
+.user-row {
+  cursor: pointer;
+}
+.user-row:hover {
+  opacity: 0.8;
+}
+</style>
