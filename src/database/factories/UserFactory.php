@@ -20,9 +20,8 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'phone' => fake()->phoneNumber(),
+            'phone' => '0' . random_int(1, 9) . '0-0000-000' . random_int(0, 9),
             'zipcode' => fake()->postcode(),
-            'pref' => random_int(1, 47),
             'city' => fake()->city(),
             'street' => fake()->streetAddress(),
             'email_verified_at' => now(),

@@ -15,10 +15,11 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(30)->has(
-            Partner::factory()->state(
-                ['name' => 'test']
-            )
-        )->create();
+        User::factory(200)->create();
+        // User::factory(200)->has(
+        //     Partner::factory()->state(
+        //         ['name' => 'test']
+        //     )
+        // )->create();
     }
 }

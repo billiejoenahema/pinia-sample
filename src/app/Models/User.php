@@ -167,7 +167,7 @@ class User extends Authenticatable
     protected function pref(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Prefecture::from($value)->text(),
+            get: fn ($value) => Prefecture::tryFrom($value)?->text(),
             set: fn ($value) => Prefecture::toId($value),
         );
     }
