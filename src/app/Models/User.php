@@ -60,7 +60,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SerializeDate;
 
     /**
      * The attributes that are mass assignable.
@@ -167,7 +167,7 @@ class User extends Authenticatable
     protected function pref(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Prefecture::from($value)->text(),
+            get: fn ($value) => Prefecture::tryFrom($value)?->text(),
             set: fn ($value) => Prefecture::toId($value),
         );
     }
