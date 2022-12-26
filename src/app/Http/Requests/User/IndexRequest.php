@@ -4,7 +4,6 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class IndexRequest extends FormRequest
 {
@@ -42,7 +41,7 @@ class IndexRequest extends FormRequest
             'name',
             'email',
             'phone',
-            'pref',
+            'birth_date',
         ];
         $column = Arr::first($columns, function ($value) use ($key) {
             return $value === $key;

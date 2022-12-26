@@ -97,6 +97,13 @@ class User extends Authenticatable
     ];
 
     /**
+     * モデルの配列フォームに追加するアクセサ
+     *
+     * @var array
+     */
+    protected $appends = ['address'];
+
+    /**
      * 所有するパートナーを取得する。
      *
      * @return HasOne
@@ -151,12 +158,25 @@ class User extends Authenticatable
             'name',
             'email',
             'phone',
+            'birth_date',
         ];
         if (in_array($column, $columns, false)) {
             $query->orderBy($column, $direction);
         }
 
         return $query;
+    }
+
+    /**
+     * 郵便番号を操作
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function zipcode(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => substr($value, 0, 3) . "-" . substr($value, 3),
+        );
     }
 
     /**
@@ -168,7 +188,19 @@ class User extends Authenticatable
     {
         return Attribute::make(
             get: fn ($value) => Prefecture::tryFrom($value)?->text(),
-            set: fn ($value) => Prefecture::toId($value),
+        );
+    }
+
+    /**
+     * 生年月日を操作
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function birthDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->format('Y年m月d日'),
+            set: fn ($value) => Carbon::parse($value)->format('Y-m-d'),
         );
     }
 
@@ -183,5 +215,15 @@ class User extends Authenticatable
             get: fn ($value) => Carbon::parse($value)->format('Y年m月d日'),
             set: fn ($value) => Carbon::parse($value)->format('Y-m-d'),
         );
+    }
+
+    /**
+     * 住所の取得
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function getAddressAttribute()
+    {
+        return "〒{$this->zipcode} {$this->pref}{$this->city}{$this->street}";
     }
 }

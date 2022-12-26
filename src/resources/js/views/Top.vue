@@ -32,6 +32,7 @@ const sort = (sortValue) => {
     Object.assign(params, { ...defaultParams });
     params.sort = sortValue;
   }
+  params.page = 1;
   store.get(params);
 };
 const defaultParams = {
@@ -124,12 +125,12 @@ const changePage = (page = null) => {
             :label="'phone'"
           />
         </th>
-        <th scope="col" @click="sort('pref')">
-          pref
+        <th scope="col" @click="sort('birth_date')">
+          birth date
           <SortIcon
             :ascending="params.ascending"
             :active-sort-key="activeSortKey"
-            :label="'pref'"
+            :label="'birth_date'"
           />
         </th>
       </tr>
@@ -141,10 +142,10 @@ const changePage = (page = null) => {
         @click="moveToDetail(user.id)"
         class="user-row"
       >
-        <th scope="row">{{ user.name }}</th>
+        <th>{{ user.name }}</th>
         <td>{{ user.email }}</td>
         <td>{{ user.phone }}</td>
-        <td>{{ user.pref }}</td>
+        <td>{{ user.birth_date }}</td>
       </tr>
     </tbody>
   </table>
