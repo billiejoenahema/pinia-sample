@@ -24,12 +24,12 @@ defineProps({
     required: false,
     type: Boolean,
   },
-  example: {
+  helpText: {
     default: "",
     required: false,
     type: String,
   },
-  hintText: {
+  popupText: {
     default: "",
     required: false,
     type: String,
@@ -153,18 +153,28 @@ const toggleHintTextShow = () => {
       </option>
     </datalist>
     <div class="hint-area">
-      <small class="input-example" @click="toggleHintTextShow()">{{
-        example
-      }}</small>
-      <div
-        class="hint-text"
-        v-if="hintText && hintTextShow"
-        @click="toggleHintTextShow()"
-      >
-        {{ hintText }}
-        <teleport to="body">
-          <div class="backdrop" @click="toggleHintTextShow()"></div>
-        </teleport>
+      <div class="hint-area">
+        <small class="help-text" @click="toggleHintTextShow()">{{
+          helpText
+        }}</small>
+        <img
+          v-if="hintText"
+          class="circle-question"
+          src="/circle-question.svg"
+        />
+        <div
+          class="hint-text"
+          v-if="hintTextShow"
+          @click="toggleHintTextShow()"
+        >
+          {{ popupText }}
+          <teleport to="body">
+            <div class="backdrop" @click="toggleHintTextShow()"></div>
+          </teleport>
+        </div>
+      </div>
+      <div v-if="maxlength" class="character-length">
+        <small>{{ modelValue.length ?? 0 }}/{{ maxlength }}</small>
       </div>
     </div>
     <div class="invalid-feedback">
@@ -179,12 +189,14 @@ const toggleHintTextShow = () => {
 .base-input {
   margin-bottom: 1rem;
 }
-.input-example {
+.description-text {
   color: rgb(141, 141, 141);
   padding: 0 1rem;
 }
 .hint-area {
-  position: relative;
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
 }
 .hint-text {
   position: absolute;
@@ -198,5 +210,9 @@ const toggleHintTextShow = () => {
   left: 0;
   width: 100vw;
   height: 100vh;
+}
+.circle-question {
+  display: block;
+  height: 16px;
 }
 </style>
