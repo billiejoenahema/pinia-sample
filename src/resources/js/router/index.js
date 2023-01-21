@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Top from "@/views/Top.vue";
 import UserDetail from "@/views/UserDetail.vue";
+import UserEdit from "@/views/UserEdit.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const routes = [
@@ -10,12 +11,13 @@ const routes = [
   },
   {
     path: "/users/:id",
+    name: "UserDetail",
     component: UserDetail,
-    props: (route) => ({
-      params: {
-        id: route.params.id,
-      },
-    }),
+  },
+  {
+    path: "/users/:id/edit",
+    name: "UserEdit",
+    component: UserEdit,
   },
   {
     path: "/:catchAll(.*)",

@@ -1,28 +1,24 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useConstsStore } from "../stores/consts";
 import { useUserStore } from "../stores/user";
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-    default: null,
-  },
-});
 const router = useRouter();
 const store = useUserStore();
 const constsStore = useConstsStore();
+const userId = router.currentRoute.value?.params?.id;
 
 onMounted(async () => {
-  await store.get(router.currentRoute.value?.params?.id);
+  await store.get(userId);
   await constsStore.getIfNeeded();
 });
 const user = computed(() => store.data);
-const showInputType = ref(false);
 const backToIndex = () => {
   router.push(`/`);
+};
+const moveToEdit = () => {
+  router.push(`/users/${userId}/edit`);
 };
 onUnmounted(() => {
   store.user = {};
@@ -52,8 +48,9 @@ onUnmounted(() => {
       <p>updated_at: {{ user.updated_at }}</p>
     </div>
   </div>
-  <input v-if="showInputType" type="file" accept=".jpg,.jpeg,.png,.svg" />
-  <button v-else @click="showInputType = !showInputType">変更する</button>
+  <button class="btn btn-primary m-2" type="button" @click="moveToEdit()">
+    編集
+  </button>
 </template>
 
 <style>
