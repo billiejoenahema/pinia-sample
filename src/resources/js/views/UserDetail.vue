@@ -40,7 +40,7 @@ onUnmounted(() => {
       <p>id: {{ user.id }}</p>
       <p>user_name: {{ user.name }}</p>
       <p>kana_name: {{ user.kana_name }}</p>
-      <p>birth_date: {{ user.birth_date }}</p>
+      <p>birth_date: {{ user.formatted_birth_date }}</p>
       <p>email: {{ user.email }}</p>
       <p>phone: {{ user.phone }}</p>
       <p>address: {{ user.address }}</p>

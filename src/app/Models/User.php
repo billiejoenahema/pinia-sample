@@ -101,7 +101,10 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $appends = ['address'];
+    protected $appends = [
+        'address',
+        'formatted_birth_date',
+    ];
 
     /**
      * 所有するパートナーを取得する。
@@ -191,17 +194,15 @@ class User extends Authenticatable
         );
     }
 
+
     /**
-     * 生年月日を操作
+     * フォーマット済みの生年月日の取得
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    protected function birthDate(): Attribute
+    protected function getFormattedBirthDateAttribute()
     {
-        return Attribute::make(
-            get: fn ($value) => Carbon::parse($value)->format('Y年m月d日'),
-            set: fn ($value) => Carbon::parse($value)->format('Y-m-d'),
-        );
+        return Carbon::parse($this->birth_date)->format('Y年m月d日');
     }
 
     /**

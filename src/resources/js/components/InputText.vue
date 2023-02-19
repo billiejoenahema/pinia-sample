@@ -9,6 +9,11 @@ defineProps({
       return ["on", "off"].includes(value);
     },
   },
+  characterCount: {
+    default: false,
+    required: false,
+    type: [Boolean, String],
+  },
   classValue: {
     default: "",
     required: false,
@@ -173,7 +178,7 @@ const toggleHintTextShow = () => {
           </teleport>
         </div>
       </div>
-      <div v-if="maxlength" class="character-length">
+      <div v-if="characterCount && maxlength" class="character-length">
         <small>{{ modelValue.length ?? 0 }}/{{ maxlength }}</small>
       </div>
     </div>

@@ -1,7 +1,8 @@
 <script setup>
-import BaseInput from "@/components/BaseInput.vue";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import InputDateSplit from "../components/InputDateSplit.vue";
+import InputText from "../components/InputText.vue";
 import { useConstsStore } from "../stores/consts";
 import { useUserStore } from "../stores/user";
 
@@ -40,10 +41,11 @@ onUnmounted(() => {
       <label>ID</label>
       <div>{{ user.id }}</div>
       <label for="name">user_name</label>
-      <BaseInput
+      <InputText
         id="name"
         type="text"
         autocomplete="on"
+        :character-count="true"
         maxlength="50"
         placeholder="山田 太郎"
         autocorrect="name"
@@ -51,7 +53,7 @@ onUnmounted(() => {
         v-model="user.name"
       />
       <label for="kana_name">user kana_name</label>
-      <BaseInput
+      <InputText
         id="kana_name"
         type="text"
         autocomplete="on"
@@ -63,7 +65,7 @@ onUnmounted(() => {
         v-model="user.kana_name"
       />
       <p>kana_name: {{ user.kana_name }}</p>
-      <p>birth_date: {{ user.birth_date }}</p>
+      <p>birth_date:&nbsp;<InputDateSplit v-model="user.birth_date" /></p>
       <p>email: {{ user.email }}</p>
       <p>phone: {{ user.phone }}</p>
       <p>address: {{ user.address }}</p>
