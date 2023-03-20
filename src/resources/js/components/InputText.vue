@@ -1,73 +1,13 @@
 <script setup>
-import { ref } from "vue";
-defineProps({
+import { computed } from "vue";
+const props = defineProps({
   autocomplete: {
-    default: "off",
+    default: "on",
     required: false,
     type: [String],
     validator(value) {
       return ["on", "off"].includes(value);
     },
-  },
-  characterCount: {
-    default: false,
-    required: false,
-    type: [Boolean, String],
-  },
-  classValue: {
-    default: "",
-    required: false,
-    type: String,
-  },
-  dataList: {
-    default: () => [],
-    required: false,
-    type: Array,
-  },
-  disabled: {
-    default: false,
-    required: false,
-    type: Boolean,
-  },
-  helpText: {
-    default: "",
-    required: false,
-    type: String,
-  },
-  popupText: {
-    default: "",
-    required: false,
-    type: String,
-  },
-  id: {
-    default: "",
-    required: true,
-    type: String,
-  },
-  invalidFeedback: {
-    default: () => [],
-    required: false,
-    type: Array,
-  },
-  maxlength: {
-    default: null,
-    required: false,
-    type: [String, Number],
-  },
-  modelValue: {
-    default: "",
-    required: false,
-    type: [String, Number],
-  },
-  placeholder: {
-    default: "",
-    required: false,
-    type: String,
-  },
-  title: {
-    default: "",
-    required: false,
-    type: String,
   },
   autocorrect: {
     default: "off",
@@ -89,8 +29,37 @@ defineProps({
       ].includes(value);
     },
   },
+  classValue: {
+    default: "",
+    required: false,
+    type: String,
+  },
+  disabled: {
+    default: false,
+    required: false,
+    type: Boolean,
+  },
+  helperText: {
+    default: "",
+    required: false,
+    type: String,
+  },
+  id: {
+    default: "",
+    required: true,
+    type: String,
+  },
+  // 入力文字数カウント表示/非表示
+  inputCounter: {
+    default: "off",
+    required: false,
+    type: String,
+    validator(value) {
+      return ["on", "off"].includes(value);
+    },
+  },
   inputmode: {
-    default: null,
+    default: "text",
     required: false,
     type: [String],
     validator(value) {
@@ -104,6 +73,35 @@ defineProps({
         "url",
       ].includes(value);
     },
+  },
+  // 入力中のプレースホルダー表示/非表示
+  inputtingPlaceholder: {
+    default: "off",
+    required: false,
+    type: String,
+    validator(value) {
+      return ["on", "off"].includes(value);
+    },
+  },
+  invalidFeedback: {
+    default: "",
+    required: false,
+    type: String,
+  },
+  maxlength: {
+    default: null,
+    required: false,
+    type: [String, Number],
+  },
+  modelValue: {
+    default: "",
+    required: false,
+    type: [String, Number],
+  },
+  placeholder: {
+    default: "",
+    required: false,
+    type: String,
   },
   type: {
     default: "text",
@@ -128,19 +126,24 @@ const emit = defineEmits(["update:modelValue"]);
 const updateModelValue = (event) => {
   emit("update:modelValue", event.target.value);
 };
-const hintTextShow = ref(false);
-const toggleHintTextShow = () => {
-  hintTextShow.value = !hintTextShow.value;
-};
+const showInputCounter = computed(
+  () => props.inputCounter === "on" && props.maxlength
+);
+const showInputtingPlaceholder = computed(
+  () => props.inputtingPlaceholder === "on" && props.modelValue
+);
+const textMuted = computed(() =>
+  props.modelValue?.length === 0 ? "text-muted" : ""
+);
 </script>
 
 <template>
-  <div class="base-input">
+  <div class="input-text-wrapper">
     <input
       :aria-describedby="`${id}HelpBlock`"
       :autocomplete="autocomplete"
-      :class="classValue"
-      class="form-control border-dark"
+      :autocorrect="autocorrect"
+      :class="'form-control border-dark ' + classValue"
       :disabled="disabled"
       :id="id"
       :inputmode="inputmode"
@@ -148,76 +151,43 @@ const toggleHintTextShow = () => {
       :placeholder="placeholder"
       :type="type"
       :value="modelValue"
-      :list="id"
-      :title="title"
       @input="updateModelValue"
     />
-    <datalist :id="'data_list_' + id">
-      <option v-for="item in dataList" :key="item">
-        {{ item }}
-      </option>
-    </datalist>
-    <div class="hint-area">
-      <div class="hint-area">
-        <small class="help-text" @click="toggleHintTextShow()">{{
-          helpText
-        }}</small>
-        <img
-          v-if="hintText"
-          class="circle-question"
-          src="/circle-question.svg"
-        />
-        <div
-          class="hint-text"
-          v-if="hintTextShow"
-          @click="toggleHintTextShow()"
-        >
-          {{ popupText }}
-          <teleport to="body">
-            <div class="backdrop" @click="toggleHintTextShow()"></div>
-          </teleport>
-        </div>
+    <div
+      v-if="showInputtingPlaceholder"
+      class="inputting-placeholder text-muted"
+    >
+      {{ placeholder }}
+    </div>
+    <div class="form-text-area">
+      <div :id="`${id}HelpBlock`" class="form-text text-muted">
+        {{ helperText }}
       </div>
-      <div v-if="characterCount && maxlength" class="character-length">
-        <small>{{ modelValue.length ?? 0 }}/{{ maxlength }}</small>
+      <div v-if="showInputCounter" :class="'form-text ' + textMuted">
+        {{ modelValue?.length ?? 0 }}/{{ maxlength }}
       </div>
     </div>
     <div class="invalid-feedback">
-      <div v-for="(error, index) in invalidFeedback" :key="index">
-        {{ error }}
-      </div>
+      {{ invalidFeedback }}
     </div>
   </div>
 </template>
 
-<style>
-.base-input {
-  margin-bottom: 1rem;
+<style scoped>
+.input-text-wrapper {
+  position: relative;
 }
-.description-text {
-  color: rgb(141, 141, 141);
-  padding: 0 1rem;
-}
-.hint-area {
-  width: 100%;
-  display: inline-flex;
-  justify-content: space-between;
-}
-.hint-text {
+.inputting-placeholder {
   position: absolute;
   top: 0;
-  padding: 16px;
-  background: rgb(222, 222, 222);
+  left: 8px;
+  font-size: 0.6rem;
 }
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+.form-text-area {
+  display: flex;
+  justify-content: space-between;
 }
-.circle-question {
-  display: block;
-  height: 16px;
+.form-text {
+  font-size: 0.6em;
 }
 </style>

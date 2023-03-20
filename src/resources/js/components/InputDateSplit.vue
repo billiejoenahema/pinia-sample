@@ -1,5 +1,6 @@
+<!-- リアルタイムバリデーションなし -->
 <script setup>
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({
   classValue: {
@@ -23,9 +24,9 @@ const props = defineProps({
     type: String,
   },
   invalidFeedback: {
-    default: () => [],
+    default: "",
     required: false,
-    type: Array,
+    type: String,
   },
   modelValue: {
     default: "",
@@ -37,11 +38,6 @@ const props = defineProps({
     required: false,
     type: String,
   },
-  tooltipTitle: {
-    default: "",
-    required: false,
-    type: String,
-  },
 });
 const emit = defineEmits(["update:modelValue"]);
 const [placeholderYear, placeholderMonth, placeholderDay] =
@@ -49,16 +45,8 @@ const [placeholderYear, placeholderMonth, placeholderDay] =
 const yearRef = ref(null);
 const monthRef = ref(null);
 const dayRef = ref(null);
-const className = computed(() => ({
-  year: `${invalidInputClassName.year} ${props.classValue}`,
-  month: `${invalidInputClassName.month} ${props.classValue}`,
-  day: `${invalidInputClassName.day} ${props.classValue}`,
-}));
-const invalidInputClassName = reactive({
-  year: "",
-  month: "",
-  day: "",
-});
+
+// propsを「年」「月」「日」に分割する
 const date = computed(() => {
   const [year, month, day] = props.modelValue
     ? props.modelValue.split("-")
@@ -69,33 +57,8 @@ const date = computed(() => {
     day: day,
   };
 });
-// 整数または空文字であるかどうか
-const isNumberOnly = (v) => v.match(/^[0-9]*$/);
-// 有効な月であるかどうか
-const validMonth = (v) => {
-  return v === "" || (1 <= Number(v) && Number(v) <= 12);
-};
-// 有効な日であるかどうか
-const validDay = (v) => {
-  return v === "" || (1 <= Number(v) && Number(v) <= 31);
-};
+
 const onInput = (e) => {
-  // 入力値が数字以外の文字を含む場合は入力欄を赤くする
-  if (isNumberOnly(yearRef.value.value)) {
-    invalidInputClassName.year = "";
-  } else {
-    invalidInputClassName.year = "invalid-input";
-  }
-  if (isNumberOnly(monthRef.value.value) && validMonth(monthRef.value.value)) {
-    invalidInputClassName.month = "";
-  } else {
-    invalidInputClassName.month = "invalid-input";
-  }
-  if (isNumberOnly(dayRef.value.value) && validDay(dayRef.value.value)) {
-    invalidInputClassName.day = "";
-  } else {
-    invalidInputClassName.day = "invalid-input";
-  }
   // 「年」が4桁入力されたら「月」に移動し入力値を選択した状態にする
   if (
     e.target === yearRef.value &&
@@ -112,7 +75,6 @@ const onInput = (e) => {
   ) {
     dayRef.value.select();
   }
-  // 入力値を'Y-m-d'の形式に変換して親コンポーネントに渡す
   const updatedDate = `${yearRef.value.value}-${monthRef.value.value}-${dayRef.value.value}`;
   emit("update:modelValue", updatedDate);
 };
@@ -128,11 +90,11 @@ const onKeyDownEnter = (e) => {
 </script>
 
 <template>
-  <div class="date-input row">
+  <div class="base-input">
     <!-- 年 -->
     <input
       :aria-describedby="`${id}HelpBlockYear`"
-      :class="'form-control border-dark input-year ' + className.year"
+      :class="'form-control border-dark input-year ' + classValue"
       :disabled="disabled"
       :id="id"
       maxlength="4"
@@ -147,7 +109,7 @@ const onKeyDownEnter = (e) => {
     <!-- 月 -->
     <input
       :aria-describedby="`${id}HelpBlockMonth`"
-      :class="'form-control border-dark input-month-day ' + className.month"
+      :class="'form-control border-dark input-month-day ' + classValue"
       :disabled="disabled"
       :id="id"
       maxlength="2"
@@ -162,7 +124,7 @@ const onKeyDownEnter = (e) => {
     <!-- 日 -->
     <input
       :aria-describedby="`${id}HelpBlockDay`"
-      :class="'form-control border-dark input-month-day ' + className.day"
+      :class="'form-control border-dark input-month-day ' + classValue"
       :disabled="disabled"
       :id="id"
       maxlength="2"
@@ -175,18 +137,13 @@ const onKeyDownEnter = (e) => {
     />
     <span>日</span>
     <div class="invalid-feedback">
-      <div v-for="error in invalidFeedback" :key="error">
-        {{ error }}
-      </div>
+      {{ invalidFeedback }}
     </div>
-    <small class="help-text">{{ helperText }}</small>
+    <small class="helper-text">{{ helperText }}</small>
   </div>
 </template>
 
-<style scoped>
-.invalid-input {
-  border-color: red !important;
-}
+<style>
 .input-year {
   width: 4rem;
   margin-right: 8px;
@@ -198,16 +155,10 @@ const onKeyDownEnter = (e) => {
   margin-left: 16px;
   text-align: right;
 }
-.date-input {
+.base-input {
   margin-bottom: 1rem;
-  display: inline-flex !important;
-  flex-direction: row !important;
-  margin: 0;
 }
-.date-input > span {
-  width: 40px !important;
-}
-.help-text {
+.helper-text {
   color: rgb(141, 141, 141);
 }
 .hint-area {
