@@ -65,7 +65,12 @@ onUnmounted(() => {
         v-model="user.kana_name"
       />
       <p>kana_name: {{ user.kana_name }}</p>
-      <p>birth_date:&nbsp;<InputDateSplit v-model="user.birth_date" /></p>
+      <p>
+        birth_date:&nbsp;<InputDateSplit
+          v-model="user.birth_date"
+          id="birth_date"
+        />
+      </p>
       <p>email: {{ user.email }}</p>
       <p>phone: {{ user.phone }}</p>
       <p>address: {{ user.address }}</p>
