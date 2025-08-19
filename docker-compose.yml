@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   app:
-    build: ./infra/php
+    build: ./docker/php
     ports:
       - 5173:5173
     volumes:
@@ -13,11 +13,11 @@ services:
       - 8081:80
     volumes:
       - ./src:/data
-      - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     working_dir: /data
 
   db:
-    build: ./infra/mysql
+    build: ./docker/mysql
     volumes:
       - db-store:/var/lib/mysql
 
